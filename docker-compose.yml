@@ -1,0 +1,48 @@
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: mongosh --eval "db.adminCommand('ping')"
+      interval: 5s
+      retries: 5
+
+  payment-backend:
+    build: ./payment-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/sepa_payments
+      APP_BANK_MOCK_BASE_URL: http://bank-mock:8081
+      APP_QR_BASE_URL: http://localhost:5174/pay
+    depends_on:
+      mongo:
+        condition: service_healthy
+      bank-mock:
+        condition: service_started
+
+  bank-mock:
+    build: ./bank-mock
+    ports:
+      - "8081:8081"
+
+  retailer-app:
+    build: ./retailer-app
+    ports:
+      - "5173:80"
+    depends_on:
+      - payment-backend
+
+  customer-app:
+    build: ./customer-app
+    ports:
+      - "5174:80"
+    depends_on:
+      - payment-backend
+
+volumes:
+  mongo-data:

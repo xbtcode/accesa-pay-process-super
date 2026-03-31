@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: sepa-bank-mock
+
+server:
+  port: 8081
+
+bank-mock:
+  simulate-delay-min-ms: 200
+  simulate-delay-max-ms: 800
