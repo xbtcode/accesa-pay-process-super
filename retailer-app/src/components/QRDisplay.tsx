@@ -10,10 +10,11 @@ interface Props {
 }
 
 const STATUS_LABELS: Record<string, string> = {
+  INITIATED: "Waiting for customer to scan...",
+  QR_GENERATED: "Waiting for customer to scan...",
   CUSTOMER_OPENED: "Customer scanned QR...",
   CUSTOMER_CONFIRMED: "Customer confirming...",
   PROCESSING: "Processing with bank...",
-  INITIATED: "Waiting for customer to scan...",
 };
 
 const TERMINAL_STATES = new Set([

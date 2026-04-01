@@ -18,7 +18,7 @@ services:
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/sepa_payments
       APP_BANK_MOCK_BASE_URL: http://bank-mock:8081
-      APP_QR_BASE_URL: http://localhost:5174/pay
+      APP_QR_BASE_URL: https://100.112.50.127:5174/pay
     depends_on:
       mongo:
         condition: service_healthy
@@ -33,14 +33,18 @@ services:
   retailer-app:
     build: ./retailer-app
     ports:
-      - "5173:80"
+      - "5173:443"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
     depends_on:
       - payment-backend
 
   customer-app:
     build: ./customer-app
     ports:
-      - "5174:80"
+      - "5174:443"
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
     depends_on:
       - payment-backend
 
